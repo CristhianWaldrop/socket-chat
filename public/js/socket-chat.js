@@ -1,6 +1,5 @@
 let socket = io();
 
-let params = new URLSearchParams(window.location.search);
 
 if (params.get('nombre') === "" || params.get('sala') === "") {
     window.location = 'index.html';
@@ -15,20 +14,22 @@ let usuario = {
 socket.on('connect', () => {
     // Enviar nombre de usuario
     socket.emit('entrarChat', usuario, (resp) => {
-        console.log('Usuarios conectados: ', resp);
+        // console.log('Usuarios conectados: ', resp);
+        renderizarUsuarios(resp);
     });
 });
 
 // Escuchar información
 socket.on('crearMensaje', (mensaje) => {
-    console.log(mensaje);
+    renderizarMensajes(mensaje, false);
+    scrollBottom();
 });
-
 
 // Escuchar cambios de usuarios cuando 
 // salen o entran al chat
-socket.on('listaPersonas', (mensaje) => {
-    console.log(mensaje);
+socket.on('listaPersonas', (personas) => {
+    // console.log(mensaje);
+    renderizarUsuarios(personas);
 });
 
 // Enviar un mensaje privado
